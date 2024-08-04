@@ -1,0 +1,31 @@
+﻿<#@ output extension=".cs" #>
+<#@parameter name="EntityName" #>
+<#@parameter name="PluralEntityName" #>
+<#@parameter name="CamelEntityName" #>
+<#@parameter name="ParamEntityName" #>
+<#@parameter name="SentenceEntityName" #>
+<#@parameter name="ServiceName" #>
+<#@parameter name="LowerServiceName" #>LowerServiceName
+using Ardalis.ApiEndpoints;
+using Microsoft.AspNetCore.Mvc;
+using SAMP.Application.Models.<#= EntityName #>;
+using Swashbuckle.AspNetCore.Annotations;
+using SAMP.Application.Services;
+using SAMP.Domain.Result;
+
+namespace SAMP.WebApi.Endpoints.<#= EntityName #>;
+
+public class List(I<#= ServiceName #>Service <#= LowerServiceName #>Service) : EndpointBaseAsync.WithoutRequest.WithActionResult
+{
+    [HttpGet("api/<#= ParamEntityName #>")]
+    [SwaggerOperation(
+        Description = "List <#= SentenceEntityName #>",
+        OperationId = "<#= PluralEntityName #>.List",
+        Tags = new[] { "<#= SentenceEntityName #>" }
+    )]
+    public override async Task<ActionResult> HandleAsync(CancellationToken cancellationToken = default)
+    {
+        var result = await <#= ServiceName #>Service.Get<#= PluralEntityName #>Async();
+        return result.ToActionResult(this);
+    }
+}

@@ -1,0 +1,31 @@
+﻿<#@ output extension=".cs" #>
+<#@parameter name="EntityName" #>
+<#@parameter name="PluralEntityName" #>
+<#@parameter name="CamelEntityName" #>
+<#@parameter name="ParamEntityName" #>
+<#@parameter name="SentenceEntityName" #>
+<#@parameter name="ServiceName" #>
+<#@parameter name="LowerServiceName" #>
+using Ardalis.ApiEndpoints;
+using Microsoft.AspNetCore.Mvc;
+using SAMP.Application.Models.<#= EntityName #>;
+using Swashbuckle.AspNetCore.Annotations;
+using SAMP.Application.Services;
+using SAMP.Domain.Result;
+
+namespace SAMP.WebApi.Endpoints.<#= EntityName #>;
+
+public class UpdateById(I<#= ServiceName #>Service <#= LowerServiceName #>Service) : EndpointBaseAsync.WithRequest<<#= EntityName #>UpdateByIdRequest>.WithActionResult
+{
+    [HttpPut("api/<#= ParamEntityName #>/{Id:int}")]
+    [SwaggerOperation(
+        Description = "Update By Id",
+        OperationId = "<#= PluralEntityName #>.UpdateById",
+        Tags = new[] { "<#= SentenceEntityName #>" }
+    )]
+    public override async Task<ActionResult> HandleAsync(CancellationToken cancellationToken = default)
+    {
+        var result = await <#= ServiceName #>Service.Update<#= EntityName #>ByIdAsync();
+        return result.ToActionResult(this);
+    }
+}
