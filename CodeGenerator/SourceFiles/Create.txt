@@ -1,0 +1,23 @@
+﻿using Ardalis.ApiEndpoints;
+using Microsoft.AspNetCore.Mvc;
+using SAMP.Application.Models.{{ EntityName }};
+using Swashbuckle.AspNetCore.Annotations;
+using SAMP.Application.Services;
+using SAMP.Domain.Result;
+
+namespace SAMP.WebApi.Endpoints.{{ EntityName }};
+
+public class Create(I{{ ServiceName }} {{ ServiceName | LowerFirstChar }}) : EndpointBaseAsync.WithRequest<{{ EntityName }}CreateRequest>.WithActionResult
+{
+    [HttpPost("api/{{ EntityName | ParamCase }}")]
+    [SwaggerOperation(
+        Description = "Create",
+        OperationId = "{{ EntityName | Pluralize }}.Create",
+        Tags = new[] { "{{ EntityName | Pluralize | SentenceCase }}" }
+    )]
+    public override async Task<ActionResult> HandleAsync([FromRoute] {{ EntityName }}CreateRequest request, CancellationToken cancellationToken = default)
+    {
+        var result = await {{ ServiceName | LowerFirstChar }}.Create{{ EntityName }}Async(request);
+        return result.ToActionResult(this);
+    }
+}

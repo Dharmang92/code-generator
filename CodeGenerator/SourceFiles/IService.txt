@@ -1,0 +1,12 @@
+﻿using SAMP.Application.Models.{{ EntityName }};
+using SAMP.Domain.Result;
+
+namespace SAMP.Application.Services;
+
+public interface I{{ ServiceName }}
+{
+    Task<Result<List<{{ EntityName }}ListResponse>>> Get{{ EntityName }}sAsync({{ EntityName | Pluralize }}ListRequest request);
+    Task<Result<{{ EntityName }}GetByIdResponse>> Get{{ EntityName }}ByIdAsync({{ EntityName }}GetByIdRequest request);
+    Task<Result<int>> Create{{ EntityName }}Async({{ EntityName }}CreateRequest request);
+    Task<Result<int>> Update{{ EntityName }}ByIdAsync({{ EntityName }}UpdateByIdRequest request);
+}

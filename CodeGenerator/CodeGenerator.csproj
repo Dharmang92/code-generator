@@ -9,32 +9,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Fluid.Core" Version="2.11.1" />
     <PackageReference Include="Mono.TextTemplating" Version="2.3.1" />
     <PackageReference Include="Pluralize.NET" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="SourceFiles\UpdateById.tt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="SourceFiles\Create.tt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="SourceFiles\List.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Endpoints.cs</LastGenOutput>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SourceFiles\GetById.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
   <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    <None Update="SourceFiles\*.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
