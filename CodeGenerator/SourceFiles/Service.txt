@@ -1,0 +1,54 @@
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using SAMP.Application.Services;
+using SAMP.Application.Models.AccReqStatus;
+using AutoMapper.QueryableExtensions;
+using SAMP.Domain.Result;
+using SAMP.Domain.Entities;
+
+namespace SAMP.Persistence.Services;
+
+public class {{ ServiceName }}(DataContext context, IMapper mapper) : I{{ ServiceName }}
+{
+    public async Task<Result<List<{{ EntityName }}ListResponse>>> Get{{ EntityName | Pluralize }}Async({{ EntityName }}ListRequest request)
+    {
+        var {{ EntityName | Pluralize }} = await context.{{ EntityName | Pluralize }}.ProjectTo<{{ EntityName }}ListResponse>(mapper.ConfigurationProvider).ToListAsync();
+        return Result<List<{{ EntityName }}ListResponse>>.Success({{ EntityName | Pluralize }});
+    }
+
+    public async Task<Result<{{ EntityName }}GetByIdResponse>> Get{{ EntityName }}ByIdAsync({{ EntityName }}GetByIdRequest request)
+    {
+        var {{ EntityName }} = await context.{{ EntityName | Pluralize }}
+            .ProjectTo<{{ EntityName }}GetByIdResponse>(mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync(d => d.Id == request.Id);
+        if ({{ EntityName }} == null)
+        {
+            return Result<{{ EntityName }}GetByIdResponse>.Invalid([new ValidationError { Key = "{{ EntityName | SentenceCase }}", ErrorMessage = "{{ EntityName | SentenceCase }} not found." }]);
+        }
+        return Result<{{ EntityName }}GetByIdResponse>.Success({{ EntityName }});
+    }
+
+    public async Task<Result<int>> Create{{ EntityName }}Async({{ EntityName }}CreateRequest request)
+    {
+        var {{ EntityName }} = mapper.Map<{{ EntityName }}>(request);
+
+        await context.{{ EntityName | Pluralize }}.AddAsync({{ EntityName }});
+        await context.SaveChangesAsync();
+        return Result<int>.Success({{ EntityName }}.Id);
+    }
+
+    public async Task<Result<int>> Update{{ EntityName }}ByIdAsync({{ EntityName }}UpdateByIdRequest request)
+    {
+        var {{ EntityName }} = await context.{{ EntityName | Pluralize }}.SingleOrDefaultAsync(d => d.Id == request.Id);
+        if ({{ EntityName }} == null)
+        {
+            return Result<int>.Invalid([new ValidationError { Key = "{{ EntityName | SentenceCase }}", ErrorMessage = "{{ EntityName | SentenceCase }} not found." }]);
+        }
+
+        {{ EntityName }} = mapper.Map(request.Request, {{ EntityName }});
+
+        context.{{ EntityName | Pluralize }}.Update({{ EntityName }});
+        await context.SaveChangesAsync();
+        return Result<int>.Success({{ EntityName }}.Id);
+    }
+}

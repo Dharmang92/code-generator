@@ -1,0 +1,23 @@
+﻿using Ardalis.ApiEndpoints;
+using Microsoft.AspNetCore.Mvc;
+using SAMP.Application.Models.{{ EntityName }};
+using Swashbuckle.AspNetCore.Annotations;
+using SAMP.Application.Services;
+using SAMP.Domain.Result;
+
+namespace SAMP.WebApi.Endpoints.{{ EntityName }};
+
+public class GetById(I{{ ServiceName }} {{ ServiceName | LowerFirstChar }}) : EndpointBaseAsync.WithRequest<{{ EntityName }}GetByIdRequest>.WithActionResult
+{
+    [HttpGet("api/{{ EntityName | Pluralize | ParamCase }}/{Id:int}")]
+    [SwaggerOperation(
+        Description = "Get By Id",
+        OperationId = "{{ EntityName | Pluralize }}.GetById",
+        Tags = new[] { "{{ EntityName | Pluralize | SentenceCase }}" }
+    )]
+    public override async Task<ActionResult> HandleAsync([FromRoute] {{ EntityName }}GetByIdRequest request, CancellationToken cancellationToken = default)
+    {
+        var result = await {{ ServiceName | LowerFirstChar }}.Get{{ EntityName }}ByIdAsync(request);
+        return result.ToActionResult(this);
+    }
+}

@@ -1,0 +1,12 @@
+﻿﻿using Microsoft.AspNetCore.Mvc;
+
+namespace SAMP.Application.Models.{{ EntityName }};
+
+public class {{ EntityName }}UpdateByIdRequest
+{
+    [FromRoute]
+	public int Id { get; set; }
+
+    [FromBody]
+    public {{ EntityName }}CreateRequest Request { get; set; }
+}

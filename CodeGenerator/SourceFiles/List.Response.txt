@@ -1,0 +1,6 @@
+﻿namespace SAMP.Application.Models.{{ EntityName }};
+
+public class {{ EntityName }}ListResponse
+{
+	public int Id { get; set; }
+}

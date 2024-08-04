@@ -1,0 +1,23 @@
+﻿using Ardalis.ApiEndpoints;
+using Microsoft.AspNetCore.Mvc;
+using SAMP.Application.Models.{{ EntityName }};
+using Swashbuckle.AspNetCore.Annotations;
+using SAMP.Application.Services;
+using SAMP.Domain.Result;
+
+namespace SAMP.WebApi.Endpoints.{{ EntityName }};
+
+public class UpdateById(I{{ ServiceName }} {{ ServiceName | LowerFirstChar }}) : EndpointBaseAsync.WithRequest<{{ EntityName }}UpdateByIdRequest>.WithActionResult
+{
+    [HttpPut("api/{{ EntityName | Pluralize | ParamCase }}/{Id:int}")]
+    [SwaggerOperation(
+        Description = "Update By Id",
+        OperationId = "{{ EntityName | Pluralize }}.UpdateById",
+        Tags = new[] { "{{ EntityName | Pluralize | SentenceCase }}" }
+    )]
+    public override async Task<ActionResult> HandleAsync([FromRoute] {{ EntityName }}UpdateByIdRequest request, CancellationToken cancellationToken = default)
+    {
+        var result = await {{ ServiceName | LowerFirstChar }}.Update{{ EntityName }}ByIdAsync(request);
+        return result.ToActionResult(this);
+    }
+}

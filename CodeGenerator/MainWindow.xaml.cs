@@ -1,19 +1,17 @@
 ﻿using System.IO;
 using System.Windows;
+using Fluid;
 using Mono.TextTemplating;
-using Pluralize.NET;
 
 namespace CodeGenerator;
 
 public partial class MainWindow : Window
 {
-    public readonly IPluralize Pluralizer;
     public Dictionary<string, string> placeholders;
     public readonly string DesktopPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
 
     public MainWindow()
     {
-        Pluralizer = new Pluralizer();
         InitializeComponent();
     }
 
@@ -24,36 +22,83 @@ public partial class MainWindow : Window
 
         if (result == MessageBoxResult.Yes)
         {
-            var pluralEntityName = Pluralizer.Pluralize(EntityName.Text);
             var templates = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SourceFiles");
-            //TODO: provide checkbox for below
-            //string[] endpoints = ["List", "GetById", "Create", "UpdateById", "Delete"];
-            string[] endpoints = ["List", "GetById", "Create", "UpdateById"];
+            var serviceName = string.IsNullOrEmpty(ServiceName.Text) ? EntityName.Text : ServiceName.Text;
+            serviceName = serviceName.Contains("service", StringComparison.OrdinalIgnoreCase)
+                ? serviceName
+                : $"{serviceName}Service";
 
             placeholders = new()
             {
                 { "EntityName", EntityName.Text },
-                { "PluralEntityName", pluralEntityName },
-                { "CamelEntityName", EntityName.Text.ToLowerFirstChar() },
-                { "ParamEntityName", pluralEntityName.ToParamCase() },
-                { "SentenceEntityName", pluralEntityName.ToSentenceCase() },
-                { "ServiceName", string.IsNullOrEmpty(ServiceName.Text) ? EntityName.Text.ToLowerFirstChar() : ServiceName.Text },
-                { "LowerServiceName", string.IsNullOrEmpty(ServiceName.Text) ? EntityName.Text.ToLowerFirstChar() : ServiceName.Text }
+                { "ServiceName", serviceName }
             };
 
+            CreateFolder(Path.Combine(DesktopPath), EntityName.Text, out var rootFolder);
+
             #region Endpoints
-            CreateFolder(DesktopPath, EntityName.Text, out var endpointFolder);
+            //TODO: provide checkbox for below
+            string[] endpoints = ["List", "GetById", "Create", "UpdateById"];
+            CreateFolder(rootFolder.FullName, "Endpoints", out var endpointsFolder);
             foreach (var endpoint in endpoints)
             {
                 try
                 {
-                    await GenerateFromTemplate(Path.Combine(templates, $"{endpoint}.tt"), endpointFolder.FullName, endpoint);
+                    await GenerateFromTemplateFluid(Path.Combine(templates, $"{endpoint}.txt"), endpointsFolder.FullName, endpoint);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error generating '{endpoint}': " + ex.Message);
+                    MessageBox.Show($"Error generating '{endpoint}':\n\n" + ex.Message);
                     return;
                 }
+            }
+            #endregion
+
+            #region Models
+            var models = new Dictionary<string, string>()
+            {
+                { $"Create.{EntityName.Text}Request", "Create.Request" },
+                { $"GetById.{EntityName.Text}GetByIdRequest", "GetById.Request" },
+                { $"GetById.{EntityName.Text}GetByIdResponse", "GetById.Response" },
+                { $"List.{EntityName.Text}ListResponse", "List.Response" },
+                { $"UpdateById.{EntityName.Text}UpdateByIdRequest", "UpdateById.Request" },
+            };
+            CreateFolder(rootFolder.FullName, "Models", out var modelsFolder);
+            foreach (var model in models)
+            {
+                try
+                {
+                    await GenerateFromTemplateFluid(Path.Combine(templates, $"{model.Value}.txt"), modelsFolder.FullName, model.Key);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error generating '{model}':\n\n" + ex.Message);
+                    return;
+                }
+            }
+            // AutoMapper
+            try
+            {
+                await GenerateFromTemplateFluid(Path.Combine(templates, "AutoMapper.txt"), modelsFolder.FullName, "MapperProfile");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error generating 'AutoMapper':\n\n" + ex.Message);
+                return;
+            }
+            #endregion
+
+            #region Services
+            CreateFolder(rootFolder.FullName, "Services", out var servicesFolder);
+            try
+            {
+                await GenerateFromTemplateFluid(Path.Combine(templates, "Service.txt"), servicesFolder.FullName, serviceName);
+                await GenerateFromTemplateFluid(Path.Combine(templates, "IService.txt"), servicesFolder.FullName, $"I{serviceName}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error generating 'Services':\n\n" + ex.Message);
+                return;
             }
             #endregion
 
@@ -61,20 +106,27 @@ public partial class MainWindow : Window
         }
     }
 
-    public async Task GenerateFromTemplate(string templatePath, string folderPath, string outputFilename)
+    public async Task GenerateFromTemplateFluid(string templatePath, string folderPath, string outputFilename)
     {
-        var generator = new TemplateGenerator();
-        var session = generator.GetOrCreateSession();
-        foreach (var placeholder in placeholders)
+        var parser = new FluidParser();
+        if (parser.TryParse(await File.ReadAllTextAsync(templatePath), out var template, out var error))
         {
-            session.Add(placeholder.Key, placeholder.Value);
-        }
+            var options = new TemplateOptions();
+            options.Filters.AddFilter("LowerFirstChar", Utils.LowerFirstChar);
+            options.Filters.AddFilter("ParamCase", Utils.ParamCase);
+            options.Filters.AddFilter("SentenceCase", Utils.SentenceCase);
+            options.Filters.AddFilter("Pluralize", Utils.Pluralize);
 
-        //TODO: first parse template and check for errors, after that only generate files
-        await generator.ProcessTemplateAsync(templatePath, Path.Combine(folderPath, outputFilename));
-        if (generator.Errors.Count != 0)
+            var context = new TemplateContext(placeholders, options);
+            var generatedFile = await template.RenderAsync(context);
+            if (generatedFile != null)
+            {
+                await File.WriteAllTextAsync(Path.Combine(folderPath, $"{outputFilename}.cs"), generatedFile);
+            }
+        }
+        else
         {
-            throw new Exception($"Found errors in {outputFilename}.tt");
+            throw new Exception(error);
         }
     }
 

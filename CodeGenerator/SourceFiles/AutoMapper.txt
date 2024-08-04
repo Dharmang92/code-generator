@@ -1,0 +1,14 @@
+﻿using AutoMapper;
+
+namespace SAMP.Application.Models.{{ EntityName }};
+
+public class MapperProfile : Profile
+{
+    public MapperProfile()
+    {
+        CreateMap<{{ EntityName }}CreateRequest, Domain.Entities.{{ EntityName }}>();
+        CreateMap<{{ EntityName }}UpdateByIdRequest, Entities.{{ EntityName }}>();
+        CreateMap<Domain.Entities.{{ EntityName }}, {{ EntityName }}ListResponse>();
+        CreateMap<Domain.Entities.{{ EntityName }}, {{ EntityName }}GetByIdResponse>();
+    }
+}
