@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace SAMP.Application.Models.{{ EntityName }};
+namespace {{ ModelPath }}.{{ EntityName }};
 
 public class MapperProfile : Profile
 {

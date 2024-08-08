@@ -40,7 +40,7 @@
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center">
             <TextBox Name="EntityName"
-                     Width="250"
+                     Width="300"
                      Height="25"
                      VerticalContentAlignment="Center"
                      Margin="0,0,10,0"
@@ -58,7 +58,7 @@
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center">
                 <TextBox Name="ModelPath"
-                         Width="250"
+                         Width="300"
                          Height="25"
                          VerticalContentAlignment="Center"
                          ToolTip="Namespace to use when creating model files. Namespace Folder will be picked up from the Entity Name"
@@ -77,7 +77,7 @@
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center">
             <TextBox Name="ServiceName"
-                     Width="250"
+                     Width="300"
                      Height="25"
                      VerticalContentAlignment="Center"
                      Margin="0,0,10,0"
@@ -95,8 +95,8 @@
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center">
             <TextBox Name="EndpointImports"
-                     Width="250"
-                     Height="75"
+                     Width="300"
+                     Height="90"
                      VerticalContentAlignment="Center"
                      TextWrapping="Wrap"
                      AcceptsReturn="True"

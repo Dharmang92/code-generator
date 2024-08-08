@@ -45,7 +45,7 @@ public partial class MainWindow : Window
             { "ModelPath", ModelPath.Text },
             { "ModelNamespace", modelNamespace }
         };
-        var parsedEndpointImportsTemplate = string.IsNullOrEmpty(EndpointImports.Text) ? await GetParsedTemplate(Path.Combine(TemplatePath, "EndpointImports.txt"), Placeholders) : EndpointImports.Text;
+        var parsedEndpointImportsTemplate = await GetParsedTemplate(string.IsNullOrEmpty(EndpointImports.Text) ? Path.Combine(TemplatePath, "EndpointImports.txt") : EndpointImports.Text, Placeholders, string.IsNullOrEmpty(EndpointImports.Text));
         Placeholders.Add("EndpointImports", parsedEndpointImportsTemplate);
 
         CreateFolder(Path.Combine(DesktopPath), EntityName.Text, out var rootFolder);
@@ -128,10 +128,10 @@ public partial class MainWindow : Window
         }
     }
 
-    public async Task<string?> GetParsedTemplate(string templatePath, object model)
+    public async Task<string?> GetParsedTemplate(string templateStr, object model, bool isTemplate = true)
     {
         var parser = new FluidParser();
-        if (parser.TryParse(await File.ReadAllTextAsync(templatePath), out var template, out var error))
+        if (parser.TryParse(isTemplate ? await File.ReadAllTextAsync(templateStr) : templateStr, out var template, out var error))
         {
             var options = new TemplateOptions();
             options.Filters.AddFilter("LowerFirstChar", Utils.LowerFirstChar);
