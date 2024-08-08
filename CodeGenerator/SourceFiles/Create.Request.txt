@@ -1,4 +1,4 @@
-﻿namespace SAMP.Application.Models.{{ EntityName }};
+﻿{{ ModelNamespace }}.{{ EntityName }};
 
 public class {{ EntityName }}CreateRequest
 {

@@ -1,4 +1,4 @@
-﻿using SAMP.Application.Models.{{ EntityName }};
+﻿using {{ ModelPath }}.{{ EntityName }};
 using SAMP.Domain.Result;
 
 namespace SAMP.Application.Services;

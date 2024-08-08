@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SAMP.Application.Services;
-using SAMP.Application.Models.AccReqStatus;
+using {{ ModelPath}}.{{ EntityName }};
 using AutoMapper.QueryableExtensions;
 using SAMP.Domain.Result;
 using SAMP.Domain.Entities;

@@ -1,11 +1,4 @@
-﻿using Ardalis.ApiEndpoints;
-using Microsoft.AspNetCore.Mvc;
-using SAMP.Application.Models.{{ EntityName }};
-using Swashbuckle.AspNetCore.Annotations;
-using SAMP.Application.Services;
-using SAMP.Domain.Result;
-
-namespace SAMP.WebApi.Endpoints.{{ EntityName }};
+﻿{{ EndpointImports }}
 
 public class Create(I{{ ServiceName }} {{ ServiceName | LowerFirstChar }}) : EndpointBaseAsync.WithRequest<{{ EntityName }}CreateRequest>.WithActionResult
 {
