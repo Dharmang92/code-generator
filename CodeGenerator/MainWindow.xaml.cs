@@ -20,7 +20,7 @@ public partial class MainWindow : Window
 
     public async void Generate_Click(object sender, RoutedEventArgs e)
     {
-        if(string.IsNullOrEmpty(EntityName.Text))
+        if (string.IsNullOrEmpty(EntityName.Text))
         {
             MessageBox.Show("Please enter Entity Name!");
             return;
@@ -123,7 +123,7 @@ public partial class MainWindow : Window
         var parsedTemplate = await GetParsedTemplate(templatePath, Placeholders);
         var filePath = Path.Combine(folderPath, $"{outputFilename}.cs");
         if (!File.Exists(filePath) || (Override.IsChecked ?? false))
-        { 
+        {
             await File.WriteAllTextAsync(filePath, parsedTemplate);
         }
     }
@@ -158,40 +158,12 @@ public partial class MainWindow : Window
     private void CheckBox_Checked(object sender, RoutedEventArgs e)
     {
         var chk = (CheckBox)sender;
-            switch (chk.Name)
-            {
-                case "List":
-                    Endpoints.Add("List");
-                    break; 
-                case "GetById":
-                    Endpoints.Add("GetById");
-                    break;
-                case "Create":
-                    Endpoints.Add("Create");
-                    break;
-                case "UpdateById":
-                    Endpoints.Add("UpdateById");
-                    break;
-        }
+        Endpoints.Add(chk.Name);
     }
 
     private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
         var chk = (CheckBox)sender;
-        switch (chk.Name)
-        {
-            case "List":
-                Endpoints.Remove("List");
-                break;
-            case "GetById":
-                Endpoints.Remove("GetById");
-                break;
-            case "Create":
-                Endpoints.Remove("Create");
-                break;
-            case "UpdateById":
-                Endpoints.Remove("UpdateById");
-                break;
-        }
+        Endpoints.Remove(chk.Name);
     }
 }
