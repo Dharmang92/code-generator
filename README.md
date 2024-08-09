@@ -1,6 +1,6 @@
 # CodeGenerator
 
-Generates Endpoints, Models and Services for C# Application using Liquid templates.
+Generates Endpoints, Models and Services for C# Application using Liquid templates. This is assuming that ArdalisEndpoints, AutoMapper and Ardalis styled Results extensions are used. However you can modify to your custom needs (PRs are appreciated 🙂).
 
 - Endpoints (folder)
   - List
