@@ -63,8 +63,8 @@ jobs:
 
       - name: Create and Push git tag
         run: |
-          git tag v${{ steps.gitversion.outputs.GITVERSION_MajorMinorPatch }}
-          git push origin v${{ steps.gitversion.outputs.GITVERSION_MajorMinorPatch }}
+          git tag ${{ steps.gitversion.outputs.GITVERSION_MajorMinorPatch }}
+          git push origin ${{ steps.gitversion.outputs.GITVERSION_MajorMinorPatch }}
 
       - name: Create GitHub Release
         id: create_release
@@ -72,8 +72,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.gitversion.outputs.GITVERSION_MajorMinorPatch }}
-          release_name: "Release v${{ steps.gitversion.outputs.GITVERSION_MajorMinorPatch }}"
+          tag_name: ${{ steps.gitversion.outputs.GITVERSION_MajorMinorPatch }}
+          release_name: ${{ steps.gitversion.outputs.GITVERSION_MajorMinorPatch }}
           draft: false
           prerelease: false
 
