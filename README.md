@@ -1,4 +1,6 @@
-# CodeGenerator
+![code-generator](https://socialify.git.ci/Dharmang92/code-generator/image?description=1&font=Inter&language=1&name=1&owner=1&pattern=Floating%20Cogs&theme=Auto)
+
+## CodeGenerator
 
 Generates Endpoints, Models and Services for C# Application using Liquid templates. This is assuming that ArdalisEndpoints, AutoMapper and Ardalis styled Results extensions are used. However you can modify to your custom needs (PRs are appreciated 🙂).
 
